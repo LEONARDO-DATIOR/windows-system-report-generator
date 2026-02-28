@@ -1,4 +1,5 @@
 using System.Management;
+using Microsoft.Win32;
 
 public class HelpDev()
 {
@@ -77,4 +78,43 @@ public class HelpDev()
         }
     }
     }
+
+    public void GetInfoCaminho(RegistryKey root, string caminho)
+    {
+        using (RegistryKey key = root.OpenSubKey(caminho))
+        {
+            if (key == null)
+            {
+                Console.WriteLine("Chave não encontrada.");
+                return;
+            }
+
+            Console.WriteLine($"===== CAMINHO: {caminho} =====");
+            Console.WriteLine();
+
+            foreach (string subKeyName in key.GetSubKeyNames())
+            {
+                using (RegistryKey subKey = key.OpenSubKey(subKeyName))
+                {
+                    if (subKey == null) continue;
+
+                    Console.WriteLine($"--- SUBKEY: {subKeyName} ---");
+
+                    foreach (string valueName in subKey.GetValueNames())
+                    {
+                        object value = subKey.GetValue(valueName);
+
+                        Console.WriteLine($"{valueName} : {value}");
+                    }
+
+                    Console.WriteLine();
+                }
+            }
+        }
+    }
+
+
+
+
+
 }
