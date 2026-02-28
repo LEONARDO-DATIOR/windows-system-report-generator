@@ -16,3 +16,6 @@ Console.WriteLine("----------------------------------------------------");
 
 var memoryService = new MemoryInfoService();
 memoryService.ExibirInformacoes();
+Console.WriteLine("\n");
+var cpuService = new CpuInfoService();
+cpuService.ExibirInformacoes();

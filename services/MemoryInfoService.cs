@@ -7,7 +7,8 @@ public class MemoryInfoService
         var total = GetTotalMemory();
         var tipo = GetMemoryType();
         var modulos = GetModuleCount();
-
+        
+        Console.WriteLine("===== INFORMAÇÕES DA MEMÓRIA RAM =====");
         Console.WriteLine($"Total RAM: {total / 1024 / 1024 / 1024} GB");
         Console.WriteLine($"Tipo: {tipo}");
         Console.WriteLine($"Módulos: {modulos}");
