@@ -5,45 +5,23 @@ public class DiskInfoService
 {
     public void ExibirInformacoes()
     {
-        var searcher = new ManagementObjectSearcher(
-            "SELECT Model, InterfaceType, Size, SerialNumber FROM Win32_DiskDrive");
-
         Console.WriteLine("===== INFORMAÇÕES DOS DISCOS =====");
 
-        foreach (ManagementObject obj in searcher.Get())
+        foreach (DriveInfo drive in DriveInfo.GetDrives())
         {
-            string model = obj["Model"]?.ToString() ?? "Desconhecido";
+            if (!drive.IsReady) continue;
 
-            ulong sizeBytes = obj["Size"] != null 
-                ? Convert.ToUInt64(obj["Size"]) 
-                : 0;
+            double totalGB = drive.TotalSize / 1024.0 / 1024.0 / 1024.0;
+            double freeGB = drive.TotalFreeSpace / 1024.0 / 1024.0 / 1024.0;
+            double usedGB = totalGB - freeGB;
 
-            double sizeGB = sizeBytes / 1024.0 / 1024.0 / 1024.0;
-
-            string diskType = DetectDiskType(model);
-
-            Console.WriteLine($"Modelo: {model}");
-            Console.WriteLine($"Tipo: {diskType}");
-            Console.WriteLine($"Tamanho: {sizeGB:F2} GB");
+            Console.WriteLine($"Nome do Volume: {drive.Name}");
+            Console.WriteLine($"Espaço Total: {totalGB:F2} GB");
+            Console.WriteLine($"Espaço Usado: {usedGB:F2} GB");
+            Console.WriteLine($"Espaço Livre: {freeGB:F2} GB");
             Console.WriteLine("----------------------------------");
         }
-
-        Console.WriteLine();
+       
     }
 
-    private string DetectDiskType(string model)
-    {
-        if (string.IsNullOrWhiteSpace(model))
-            return "Desconhecido";
-
-        string lowerModel = model.ToLower();
-
-        if (lowerModel.Contains("ssd"))
-            return "SSD";
-
-        if (lowerModel.Contains("nvme"))
-            return "NVMe (SSD)";
-
-        return "HDD ou Não identificado";
-    }
 }
